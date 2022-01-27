@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -13,7 +14,11 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return Product::all();
+        // return Product::all();
+        return $products = DB::table('products')
+        ->join('categories', 'products.category', '=', 'categories.id')
+        ->select('products.id', 'products.name', 'categories.category', 'products.price', 'products.stock','products.thumbnail')
+        ->get();
     }
 
     /**
@@ -33,13 +38,15 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {  
         $request->validate([
             'name' => 'required',
-            'description' => 'required',
             'category' => 'required',
+            'sub-category' => 'required',
+            'description' => 'required',
             'price' => 'required',
-            'image' => 'required'
+            'stock' => 'required',
+            'thumbnail' => 'required'
         ]);
         return Product::create($request->all());
     }
@@ -75,7 +82,22 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // // dd($request->all());
+        // return  $request->name;
+        $product= Product::find($id);
+        $product->update($request->all());
+        return $product;
+    }
+
+    public function updatePrice(Request $request, $id)
+    {
+        // return  $request->price;
+        $result = DB::table('products')
+        ->where('id', $id)  // find your user by their email
+        ->limit(1)  // optional - to ensure only one record is updated.
+        ->update(array('price' => $request->price));  // update the record in the DB. 
+        
+        return json_encode(['message'=>$result]);  
     }
 
     /**
