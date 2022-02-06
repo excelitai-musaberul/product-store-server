@@ -106,8 +106,10 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function delete($id)
     {
-        //
+        // return [$request, $id];
+        // return $request;
+        return Product::destroy($id);
     }
 }
