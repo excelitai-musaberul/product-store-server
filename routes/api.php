@@ -25,6 +25,9 @@ header('Access-Control-Allow-Origin: *');
 //--------------- Auth Routes -------------------
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::middleware('auth:sanctum')->get('/role', [AuthController::class, 'role']);
+
+Route::middleware('auth:sanctum')->get('/user', [AuthController::class, 'user']);
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
 Route::middleware('auth:sanctum')->post('/validToken', [AuthController::class, 'validToken']);
 
@@ -65,6 +68,4 @@ Route::middleware('auth:sanctum')->group(function () {
    
 });
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();  
-});
+
